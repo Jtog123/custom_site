@@ -52,21 +52,42 @@ const createDBIfNoneExists = async (client) => {
 
 }
 
+/*
+
+who: typically guests, as we cant make people log in, guest1, guest2 append a number to each guest
+where: where are they coming from? have to use a UTM link to redirect them to my site
+when: when did they arrive on the website
+where: where are they going next, github or insta?
+
+*/
+
 const createTables = async(pool) => {
     //cerate tables if they dont already exist
     try {
+        await pool.query("BEGIN");
+
+        console.log('Creating tables\n')
+
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS visitor_analytics(
+                visitor_analytics_id SERIAL PRIMARY KEY,
+                username VARCHAR(10) DEFAULT 'guest',
+                referral_site VARCHAR(50),
+                time TIMESTAMP,
+                link_clicked VARCHAR(50)
+            )`
+        );
+
+        await pool.query("COMMIT");
 
     } catch(err) {
+        await pool.query("ROLLBACK")
         console.error("Error: ", err);
     }
 
 }
 
-// Create a db if it does not already exist
-
-//Connect the server to the pg server
-
-// Create a table if it does not already exist
+// Create an event that 
 
 
 
@@ -118,7 +139,7 @@ const main = async () => {
     try {
         //connect to new DB
         console.log(`Connecting the new DB ${process.env.PG_NEW_DB} with pool\n`);
-        await pool.query("SELECT NOW()");
+        //await pool.query("SELECT NOW()");
 
         // Create table if they dont exist
         await createTables(pool);
@@ -126,10 +147,16 @@ const main = async () => {
     } catch(err) {
         console.log("Error:", err);
     } finally {
-        console.log(`Ending pool connection ${process.env.PG_NEW_DB}`);
-        await pool.end();
+        //console.log(`Ending pool connection ${process.env.PG_NEW_DB}`);
+        //await pool.end();
         //
     }
+
+
+    console.log(`Ending pool connection ${process.env.PG_NEW_DB}`);
+    await pool.end();
+
+
 }
 
 main();
