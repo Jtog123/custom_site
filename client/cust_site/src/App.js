@@ -14,7 +14,7 @@ function App() {
     });
 
     return () => {
-      // desrtoy typed instance on cleanup
+      // desrtoy typed instance on cleanupp
       typed.destroy();
     };
 
