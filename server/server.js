@@ -128,6 +128,7 @@ const main = async () => {
     } finally {
         console.log(`Ending pool connection ${process.env.PG_NEW_DB}`);
         await pool.end();
+        //
     }
 }
 
