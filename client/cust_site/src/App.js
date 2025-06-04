@@ -1,10 +1,30 @@
 import React from 'react';
 import Typed from 'typed.js'
 import './App.css';
+import axios from 'axios'
+
+
+
 
 function App() {
 
   const el = React.useRef(null);
+
+
+  async function handleClick(platform) {
+    console.log(`${platform} clicked`);
+
+
+    const res = await axios.post('http://localhost:4000/', {
+      platform_sent: platform
+
+    })
+
+    console.log(res);
+
+  }
+
+
 
   React.useEffect(() => {
     const typed = new Typed(el.current, {
@@ -30,12 +50,14 @@ function App() {
 
         <div  className="links-container w-full m-10 flex gap-8 mb-32 justify-center ">
 
-          <div className="cursor-pointer px-6 py-3 rounded-xl bg-gray-100 shadow-[inset_0_-4px_0_#c1c1c1] border border-gray-300 text-black font-mono font-bold text-lg hover:translate-y-[2px] hover:shadow-[inset_0_-2px_0_#c1c1c1] transition duration-150">
+          <div  className="cursor-pointer px-6 py-3 rounded-xl bg-gray-100 shadow-[inset_0_-4px_0_#c1c1c1] border border-gray-300 text-black font-mono font-bold text-lg hover:translate-y-[2px] hover:shadow-[inset_0_-2px_0_#c1c1c1] transition duration-150"
+            onClick={() => handleClick("Github")}>
           GitHub
           </div>
 
           
-          <div className="cursor-pointer px-6 py-3 rounded-xl bg-pink-100 shadow-[inset_0_-4px_0_#e87eb5] border border-pink-300 text-pink-800 font-mono font-bold text-lg hover:translate-y-[2px] hover:shadow-[inset_0_-2px_0_#e87eb5] transition duration-150">
+          <div  className="cursor-pointer px-6 py-3 rounded-xl bg-pink-100 shadow-[inset_0_-4px_0_#e87eb5] border border-pink-300 text-pink-800 font-mono font-bold text-lg hover:translate-y-[2px] hover:shadow-[inset_0_-2px_0_#e87eb5] transition duration-150"
+            onClick={() => handleClick("Instagram")}>
           Instagram
           </div>
 

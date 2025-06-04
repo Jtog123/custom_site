@@ -22,13 +22,31 @@ where: where are they going next, github or insta?
 
 import pg from 'pg'
 import dotenv from 'dotenv'
-dotenv.config({path:"./server/.env"});
+import express from 'express'
+import cors from 'cors'
+dotenv.config({path: ".env"});
+//dotenv.config({path: "/server/.env"});
+
+const app = express();
+const PORT = 4000;
+
+app.use(cors());
+
+app.use(express.json())
 
 const { Pool, Client } = pg;
 
 //console.log(Pool);
 
+
+
+
+
+
+
 const createDBIfNoneExists = async (client) => {
+
+    
 
     try {
 
@@ -73,7 +91,7 @@ const createTables = async(pool) => {
                 visitor_analytics_id SERIAL PRIMARY KEY,
                 username VARCHAR(10) DEFAULT 'guest',
                 referral_site VARCHAR(50),
-                time TIMESTAMP,
+                time TIMESTAMP NOT NULL,
                 link_clicked VARCHAR(50)
             )`
         );
@@ -87,17 +105,10 @@ const createTables = async(pool) => {
 
 }
 
-// Create an event that 
+// Create a function that tracks which button was pressed , if github/ insta populate a table entry
 
-
-
-const main = async () => {
-    
-    console.log("running main");
-
-
-
-    //try client i guess
+const initDB = async() => {
+        //try client i guess
 
     //Create initial connection
     const client = new Client({
@@ -107,6 +118,7 @@ const main = async () => {
         database:process.env.PG_DB,
         port: process.env.PG_PORT
     });
+
 
 
     //establish initial connection
@@ -156,8 +168,36 @@ const main = async () => {
     console.log(`Ending pool connection ${process.env.PG_NEW_DB}`);
     await pool.end();
 
+}
+
+app.post('/', (req, res) => {
+    console.log(req.body.platform_sent);
+
+    res.send("We have recieved the button click");
+})
+
+
+
+
+const main = async () => {
+    
+    console.log("running main");
+
+    //init the DB
+    await initDB();
+
+
+
+    //listen on this port, any problems listening here or do i want to listen beforehand?
+    app.listen(PORT, () => {
+        console.log(`App listening on port ${PORT}`)
+    })
+
+
 
 }
+
+
 
 main();
 
